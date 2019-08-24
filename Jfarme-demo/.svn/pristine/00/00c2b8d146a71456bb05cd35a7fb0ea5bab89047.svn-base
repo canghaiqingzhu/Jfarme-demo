@@ -1,0 +1,206 @@
+package com.xiehui.view;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.xiehui.mapper.KucunMapper;
+import com.xiehui.mapper.MassageMapper;
+import com.xiehui.util.ABSearch;
+import com.xiehui.util.JDBCTemplate;
+import com.xiehui.util.RowMapper;
+
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+public class MassageFrame extends JFrame implements ActionListener{
+
+	private Object password = UserMainFrame.password;
+	private Object name = UserMainFrame.name;
+	private int root = UserMainFrame.root;
+	
+//	private Object password="ying",name="qin";
+//	private int root=1;
+	
+	private JDBCTemplate temp = new JDBCTemplate();
+	private JPanel contentPane;
+	private JTextField thingId;
+	private JTextField thingName;
+	private JTextField shangjia;
+	private JTextField jinjia;
+	private JTextField shoujia;
+	private JTable table;
+	private Vector colname;
+	private Vector data = new Vector();
+	private DefaultTableModel dtm = new DefaultTableModel();
+
+
+	public MassageFrame() {
+		
+		this.setTitle("用户："+(String) name+"      商品信息录入界面");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("images/3.JPG"));
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 540);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel label = new JLabel("商品编号：");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setBounds(128, 10, 68, 15);
+		contentPane.add(label);
+		
+		thingId = new JTextField();
+		thingId.setBounds(206, 7, 66, 21);
+		contentPane.add(thingId);
+		thingId.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("商品名：");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(265, 47, 54, 15);
+		contentPane.add(lblNewLabel);
+		
+		thingName = new JTextField();
+		thingName.setBounds(329, 44, 66, 21);
+		contentPane.add(thingName);
+		thingName.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("商家：");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(10, 47, 54, 21);
+		contentPane.add(lblNewLabel_1);
+		
+		shangjia = new JTextField();
+		shangjia.setHorizontalAlignment(SwingConstants.CENTER);
+		shangjia.setBounds(73, 44, 66, 21);
+		contentPane.add(shangjia);
+		shangjia.setColumns(10);
+		
+		JLabel Jjinjia = new JLabel("进价：");
+		Jjinjia.setHorizontalAlignment(SwingConstants.CENTER);
+		Jjinjia.setBounds(10, 83, 54, 21);
+		contentPane.add(Jjinjia);
+		
+		jinjia = new JTextField();
+		jinjia.setBounds(73, 83, 66, 21);
+		contentPane.add(jinjia);
+		jinjia.setColumns(10);
+		
+		JLabel label_1 = new JLabel("售价：");
+		label_1.setHorizontalAlignment(SwingConstants.CENTER);
+		label_1.setBounds(265, 86, 54, 15);
+		contentPane.add(label_1);
+		
+		shoujia = new JTextField();
+		shoujia.setBounds(329, 83, 66, 21);
+		contentPane.add(shoujia);
+		shoujia.setColumns(10);
+	
+		
+		colname = new Vector();
+		colname.add("序号");
+		colname.add("商品编码");
+		colname.add("商品名");
+		colname.add("商家");
+		colname.add("进价");
+		colname.add("售价");
+		showAll();
+		table = new JTable(dtm);
+		table.setSize(414, 326);
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(10, 111, 414, 326);
+		contentPane.add(scrollPane);
+		
+		
+		scrollPane.setViewportView(table);
+		
+		JButton button_1 = new JButton("清     除");
+		button_1.addActionListener(this);
+		button_1.setBounds(10, 469, 129, 23);
+		contentPane.add(button_1);
+		
+		if(root == 1){
+			JButton btnboss = new JButton("返回BOSS界面");
+			btnboss.addActionListener(this);
+			btnboss.setBounds(147, 440, 121, 23);
+			contentPane.add(btnboss);
+		}			
+			JButton btnNewButton = new JButton("商品资料入库");
+			btnNewButton.addActionListener(this);
+			btnNewButton.setBounds(280, 469, 129, 23);
+			contentPane.add(btnNewButton);
+			
+			JButton btnNewButtonJin = new JButton("进货界面");
+			btnNewButtonJin.addActionListener(this);
+			btnNewButtonJin.setBounds(149, 469, 119, 23);
+			contentPane.add(btnNewButtonJin);
+
+	}
+
+	private void showAll() {
+		ABSearch ab;
+		String sql = "select * from thingmassage";
+		RowMapper um = new MassageMapper();
+		Object[] array={};
+		data = temp.query(sql,um,array);
+		for(int i = 0;i < data.size();i++){
+			Vector d = (Vector) data.get(i);
+			Object v = d.get(1);
+			ab = new ABSearch(v);
+			d.add(ab.ABSearchName());
+		}
+		dtm.setDataVector(data, colname);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if("清     除".equals(e.getActionCommand())){
+			thingId.setText(null);
+			thingName.setText(null);
+			shangjia.setText(null);
+			jinjia.setText(null);
+			shoujia.setText(null);	
+		}else if("商品资料入库".equals(e.getActionCommand())){
+			if(thingId.getText().equals(null)||thingName.getText().equals(null)||shangjia.getText().equals(null)||shangjia.getText().equals(null)||shoujia.getText().equals(null)){
+				int jishu = 0;
+				for(int i=0;i<data.size();i++){
+					Vector d = (Vector) data.get(i);
+					if (thingId.getText().equals(d.get(0))) {
+						jishu++;
+					}
+				}
+				if(jishu < 1){
+					ABSearch ab = new ABSearch(thingId.getText());
+					String sql = "insert into thingmassage(thingId,thingName,shangjia,jinjia,shoujia) values(?,?,?,?,?)";
+					Object[] arg ={thingId.getText(),thingName.getText(),shangjia.getText(),jinjia.getText(),shoujia.getText()};
+					temp.modify(sql, arg);
+					showAll();
+				}else{
+					System.out.println("商品信息重复！！！");
+				}
+			}
+		}else if("返回BOSS界面".equals(e.getActionCommand())){
+			this.setVisible(false);
+			UserMainFrame umf = new UserMainFrame(name,password);
+		}else if("进货界面".equals(e.getActionCommand())){
+			this.setVisible(false);
+			JinFrame abf = new JinFrame();
+			abf.setVisible(true);
+		}
+		
+	}
+}

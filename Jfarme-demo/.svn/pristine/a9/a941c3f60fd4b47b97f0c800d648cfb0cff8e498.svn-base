@@ -1,0 +1,48 @@
+create database xie;
+
+use xie;
+
+create table user
+(
+ id int auto_increment primary key,
+ username varchar(20),
+ password varchar(20)
+);
+
+insert into user(username,password) values('zhangsan','123456');
+
+insert into user(username,password) values('lisi','lisi');
+
+insert into user(username,password) values('lisi2','lisi2');
+
+select * from user;
+
+select * from user where username='zhangsan2' and password='123456';
+
+select count(*) from user where username='zhangsan2' and password='123456';
+
+update user set username="lishi" where id=1
+
+update user set password=111 where id=1;
+------------------------------------------------------------------
+create table jinhuo
+(
+ id int auto_increment primary key,
+ thingId varchar(20),
+ thingName varchar(20),
+ jinjia int,
+ maijia int,
+ kucun int
+);
+
+
+create table jindan
+(
+	id int auto_increment primary key,
+	thingId varchar(20),
+	number int,
+	time varchar(20),
+ 	zhiyuan varchar(20)
+);
+insert into user(thingId,number,time,zhiyuan) values('201414','10,2016-7-5 21:54:02','qin');
+

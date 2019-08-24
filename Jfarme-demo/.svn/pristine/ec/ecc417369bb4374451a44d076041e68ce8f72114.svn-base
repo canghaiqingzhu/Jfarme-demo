@@ -1,0 +1,286 @@
+package com.xiehui.view;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.xiehui.mapper.UserMapper;
+import com.xiehui.util.RowMapper;
+import com.xiehui.util.JDBCTemplate;
+
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
+
+public class UserFrame extends JFrame implements ActionListener{
+	private Object name;
+	private int root;
+	private JPanel contentPane;
+	private JTextField bpassword;
+	private JTextField xpassword1;
+	private JDBCTemplate temp = new JDBCTemplate();
+	private JTextField nameru;
+	private JTextField passwordru;
+	private JTextField rootru;
+	private JTextField idxiu;
+	private JTextField namexiu;
+	private JTextField passwordxiu;
+	private JTextField rootxiu;
+	private JTextField idsan;
+
+	private Vector data;
+	private Vector colname ;
+	private DefaultTableModel dtm = new DefaultTableModel();
+	
+	public UserFrame(Object name,Object password){
+		this.name = name;
+		fanRoot(name,password);
+		Object data1 = data.get(0);
+		Object v =((Vector) data1).get(3);
+		String a = v.toString();
+		root = Integer.parseInt(a);
+		
+		
+		if(root==1){
+			UserFrame();
+		}else{
+			System.out.println("待开发---------");
+		}
+		
+	}
+
+
+	/**
+	 * Create the frame.
+	 * @return 
+	 */
+	public void UserFrame() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 409);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 0, 434, 371);
+		contentPane.add(tabbedPane);
+		
+	
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("设置", null, panel, null);
+		panel.setLayout(null);
+//修改密码		
+		JLabel lblNewLabel = new JLabel("原  密  码：");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(73, 65, 74, 15);
+		panel.add(lblNewLabel);
+		
+		bpassword = new JTextField();
+		bpassword.setHorizontalAlignment(SwingConstants.CENTER);
+		bpassword.setBounds(170, 62, 126, 21);
+		panel.add(bpassword);
+		bpassword.setColumns(10);
+		
+		JLabel label = new JLabel("新  密  码：");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setBounds(73, 135, 74, 15);
+		panel.add(label);
+		
+		xpassword1 = new JTextField();
+	//	xpassword1.setBounds(170, 132, 126, 21);
+		panel.add(xpassword1);
+		xpassword1.setColumns(10);
+			
+		JButton button = new JButton("确定");
+		button.addActionListener(this);
+		button.setBounds(159, 183, 93, 23);
+		panel.add(button);
+		
+		JPanel manger = new JPanel();
+		tabbedPane.addTab("管理", null, manger, null);
+		manger.setLayout(null);
+	
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 10, 429, 342);
+		manger.add(panel_1);
+		panel_1.setLayout(null);
+	
+//显示		
+		JPanel panel_5 = new JPanel();
+		panel_5.setBounds(0, 97, 409, 224);
+		panel_1.add(panel_5);
+		panel_5.setLayout(null);
+		
+		JTextArea xianshi = new JTextArea();
+		xianshi.setBounds(0, 0, 409, 224);
+		panel_5.add(xianshi);
+		
+		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane_1.setBounds(0, 0, 409, 94);
+		panel_1.add(tabbedPane_1);
+//添加		
+		JPanel panel_2 = new JPanel();
+		tabbedPane_1.addTab("添加", null, panel_2, null);
+		panel_2.setLayout(null);
+		
+		JLabel lblUserid = new JLabel("姓  名：");
+		lblUserid.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserid.setBounds(10, 10, 54, 15);
+		panel_2.add(lblUserid);
+		
+		nameru = new JTextField();
+		nameru.setBounds(62, 7, 66, 21);
+		panel_2.add(nameru);
+		nameru.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("密  码：");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(235, 10, 54, 15);
+		panel_2.add(lblNewLabel_1);
+		
+		passwordru = new JTextField();
+		passwordru.setBounds(286, 7, 66, 21);
+		panel_2.add(passwordru);
+		passwordru.setColumns(10);
+		
+		JLabel lblNewLabel_2 = new JLabel("权  限：");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_2.setBounds(10, 40, 54, 15);
+		panel_2.add(lblNewLabel_2);
+		
+		rootru = new JTextField();
+		rootru.setBounds(62, 35, 66, 21);
+		panel_2.add(rootru);
+		rootru.setColumns(10);
+	
+		JButton btnru = new JButton("添   加");
+		btnru.addActionListener(this);
+		btnru.setBounds(235, 35, 93, 23);
+		panel_2.add(btnru);
+//修改			
+		JPanel panel_3 = new JPanel();
+		tabbedPane_1.addTab("修改", null, panel_3, null);
+		panel_3.setLayout(null);
+		
+		JLabel lblNewLabel_3 = new JLabel("id:");
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3.setBounds(0, 3, 54, 15);
+		panel_3.add(lblNewLabel_3);
+		
+		idxiu = new JTextField();
+		idxiu.setBounds(40, 0, 66, 21);
+		panel_3.add(idxiu);
+		idxiu.setColumns(10);
+		
+		JLabel lblNewLabel_4 = new JLabel("姓  名：");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4.setBounds(138, 3, 54, 15);
+		panel_3.add(lblNewLabel_4);
+		
+		namexiu = new JTextField();
+		namexiu.setBounds(187, 0, 66, 21);
+		panel_3.add(namexiu);
+		namexiu.setColumns(10);
+		
+		JLabel lblNewLabel_5 = new JLabel("密  码：");
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5.setBounds(282, 3, 54, 15);
+		panel_3.add(lblNewLabel_5);
+		
+		passwordxiu = new JTextField();
+		passwordxiu.setBounds(328, 0, 66, 21);
+		panel_3.add(passwordxiu);
+		passwordxiu.setColumns(10);
+		
+		JLabel lblNewLabel_6 = new JLabel("权  限：");
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_6.setBounds(40, 40, 54, 15);
+		panel_3.add(lblNewLabel_6);
+		
+		rootxiu = new JTextField();
+		rootxiu.setBounds(95, 37, 66, 21);
+		panel_3.add(rootxiu);
+		rootxiu.setColumns(10);
+		
+		JButton btnxiu = new JButton("修  改");
+		btnxiu.addActionListener(this);
+		btnxiu.setBounds(268, 36, 93, 23);
+		panel_3.add(btnxiu);
+//删除		
+		JPanel panel_4 = new JPanel();
+		tabbedPane_1.addTab("删除", null, panel_4, null);
+		panel_4.setLayout(null);
+		
+		JLabel lblId = new JLabel("id：");
+		lblId.setHorizontalAlignment(SwingConstants.CENTER);
+		lblId.setBounds(35, 20, 54, 15);
+		panel_4.add(lblId);
+		
+		idsan = new JTextField();
+		idsan.setBounds(77, 17, 66, 21);
+		panel_4.add(idsan);
+		idsan.setColumns(10);
+		
+		JButton btnshan = new JButton("删  除");
+		btnshan.addActionListener(this);
+		btnshan.setBounds(257, 16, 93, 23);
+		panel_4.add(btnshan);
+		
+	
+	}
+	
+	public void fanRoot(Object name,Object password){
+		String sql = "select * from user where username=? and password=?";
+		RowMapper um = new UserMapper();
+		Object[] array={name,password};
+		data = temp.query(sql, um,array);
+		return;
+	}
+	
+	public void showAll(){
+		String sql = "select * from user ";
+		RowMapper um = new UserMapper();
+		Object[] array={};
+		data = temp.query(sql, um,array);
+		dtm.setDataVector(data, colname);
+	}
+//按钮
+	public void actionPerformed(ActionEvent e) {
+		if("添加".equals(e.getActionCommand())){
+			System.out.println("======insert========");
+			
+			String sql="insert into user(username,password,root) values(?,?,?)";
+			Object[] arg={nameru.getText(),passwordru.getText(),rootru.getText()};
+			temp.modify(sql, arg);
+			showAll();
+		}else if("修改".equals(e.getActionCommand())){
+			System.out.println("=======update========");
+			
+			String sql="update user set username=?,password=? where id=?";
+			Object[] arg={namexiu.getText(),passwordxiu.getText(),rootxiu.getText(),idxiu.getText()};
+			temp.modify(sql, arg);
+			showAll();
+		}else if("删除".equals(e.getActionCommand())){
+			System.out.println("=======delete========");
+			String sql="delete from user where id=?";
+			Object[] arg={idsan.getText()};
+			temp.modify(sql, arg);
+			showAll();
+		}
+	}
+}

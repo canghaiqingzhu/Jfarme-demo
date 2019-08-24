@@ -1,0 +1,11 @@
+import com.xiehui.view.MassageFrame;
+
+public class Mainaa {
+
+	public static void main(String[] args) {
+//		new Sqlyuju();
+		MassageFrame mf = new MassageFrame();
+		mf.setVisible(true);
+	}
+
+}

@@ -1,0 +1,14 @@
+
+
+public class Dome {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+//		new UserMainFrame("qin","ying");
+		CopyOfJinFrame cf = new CopyOfJinFrame();
+		cf.setVisible(true);
+	}
+
+}

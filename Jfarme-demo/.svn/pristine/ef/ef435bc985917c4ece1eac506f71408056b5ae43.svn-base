@@ -1,0 +1,55 @@
+import java.util.Vector;
+
+import javax.swing.table.DefaultTableModel;
+
+import com.xiehui.mapper.UserMapper;
+import com.xiehui.util.JDBCTemplate;
+import com.xiehui.util.RowMapper;
+
+public class Sqlyuju {
+	private JDBCTemplate temp = new JDBCTemplate();
+	private DefaultTableModel dtm = new DefaultTableModel();
+	private String[] mysql= new String[5];
+	private Vector data = new Vector();
+	public Sqlyuju(){
+		
+		mysql[0]="insert into user(username,password,root) values(?,?,?)";
+		mysql[1]="insert into thingmassage(thingId,thingName,jinjia,shangjia,shoujia) values(?,?,?,?,?)";
+		mysql[2]="insert into xiaodan(thingId,number,time,zhiyuan) values(?,?,?,?)";
+		mysql[3]="insert into jindan(thingId,number,time,zhiyuan) values(?,?,?,?)";
+		mysql[4]="insert into kucun(thingId,number) values(?,?)";
+		System.out.println("mysql="+mysql);
+		Vector data1 = new Vector();
+		data1.add("user");
+		data1.add("xie");
+		data1.add("123");
+		data1.add(2);
+		data.add(data1);
+		
+		Vector data2 = new Vector();
+		data2.add("user");
+		data2.add("hui");
+		data2.add("789");
+		data2.add(4);
+		data.add(data2);
+	
+		Vector data3 = new Vector();
+		data3.add("user");
+		data3.add("tian");
+		data3.add("456");
+		data3.add(3);
+		data.add(data3);
+		
+		Vector data4 = new Vector();
+		data4.add("user");
+		data4.add("qin");
+		data4.add("ying");
+		data4.add(1);
+		data.add(data4);
+		System.out.println("data="+data);
+		
+		Object[] arg={};
+		temp.modify(mysql[0], arg);
+	}
+
+}

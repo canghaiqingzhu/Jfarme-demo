@@ -1,0 +1,275 @@
+package com.xiehui.view;
+
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import java.lang.Integer;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.xiehui.mapper.KucunMapper;
+import com.xiehui.mapper.UserMapper;
+import com.xiehui.util.ABSearch;
+import com.xiehui.util.JDBCTemplate;
+import com.xiehui.util.MyThread;
+import com.xiehui.util.RowMapper;
+
+public class KuFrame extends JFrame implements ActionListener{
+	private JPanel acontentPane;
+	private JTextField oldpassword;
+	private JTextField newpassword;
+
+	private Object password = UserMainFrame.password;
+	private Object name = UserMainFrame.name;
+	private int root = UserMainFrame.root;
+//	private Object password="ying",name="qin";
+//	private int root=1;
+
+	private JDBCTemplate atemp = new JDBCTemplate();
+	private DefaultTableModel adtm = new DefaultTableModel();
+	private JPanel bcontentPane;
+	private Vector bdata = new Vector();
+	private Vector bcolname = new Vector();
+	private DefaultTableModel bdtm;
+	private JTable selfmessage;
+	private Vector acolname;
+	private Vector adata = new Vector();
+	private JLabel jl;
+	private JTable table;
+	private JTextField xuId;
+	private JTextField thingNum;
+	private JDBCTemplate temp = new JDBCTemplate();
+	private DefaultTableModel dtm = new DefaultTableModel();
+	private Vector data = new Vector();
+	private Vector colname = new Vector();
+	
+	public KuFrame() {
+		
+		this.setTitle("用户："+(String) name+"    库存管理界面");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("images/3.JPG"));
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 417);
+		acontentPane = new JPanel();
+		acontentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(acontentPane);
+		acontentPane.setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 35, 424, 344);
+		acontentPane.add(tabbedPane);
+//--管理-------------------------------------------		
+		JPanel jp1 = new JPanel();
+		tabbedPane.addTab("管理", null, jp1, null);
+		jp1.setLayout(null);
+		
+		JLabel label = new JLabel("旧密码：");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setBounds(31, 21, 54, 15);
+		jp1.add(label);
+		
+		oldpassword = new JTextField();
+		oldpassword.setBounds(114, 18, 66, 21);
+		jp1.add(oldpassword);
+		oldpassword.setColumns(10);
+		
+		JLabel label_1 = new JLabel("新密码：");
+		label_1.setHorizontalAlignment(SwingConstants.CENTER);
+		label_1.setBounds(31, 59, 54, 15);
+		jp1.add(label_1);
+		
+		newpassword = new JTextField();
+		newpassword.setBounds(114, 56, 66, 21);
+		jp1.add(newpassword);
+		newpassword.setColumns(10);
+		
+		JButton button = new JButton("sure");
+		button.addActionListener(this);
+		button.setBounds(235, 17, 119, 23);
+		jp1.add(button);
+		
+		JLabel label_2 = new JLabel("个人信息：");
+		label_2.setHorizontalAlignment(SwingConstants.CENTER);
+		label_2.setBounds(27, 108, 84, 15);
+		jp1.add(label_2);
+		
+		acolname = new Vector();
+		acolname.add("id");
+		acolname.add("username");
+		acolname.add("password");
+		acolname.add("root");
+		fanSelf();
+		selfmessage = new JTable(adtm);
+		selfmessage.setSize(399, 71);
+		JScrollPane scrollPane = new JScrollPane(selfmessage);
+		scrollPane.setBounds(10, 140, 399, 71);
+		jp1.add(scrollPane);
+		
+		if(root == 1){
+			JButton btnboss = new JButton("返回boss界面");
+			btnboss.addActionListener(this);
+			btnboss.setBounds(235, 55, 119, 23);
+			jp1.add(btnboss);
+		}
+//--工作--------------------------------------------------------------------------------------
+		JPanel jp2 = new JPanel();
+		tabbedPane.addTab("工作", null, jp2, null);
+		jp2.setLayout(null);
+		
+		colname = new Vector();
+		colname.add("序号");
+		colname.add("物品编号");
+		colname.add("库存数");
+		colname.add("名称");
+		showAll();	
+		table = new JTable(dtm);
+		table.setSize(399, 254);
+		JScrollPane scrollPane_1 = new JScrollPane(table);
+		scrollPane_1.setBounds(10, 10, 399, 254);
+		jp2.add(scrollPane_1);
+		
+		
+//		scrollPane_1.setViewportView(table);
+		
+		JLabel label_3 = new JLabel("序号：");
+		label_3.setHorizontalAlignment(SwingConstants.CENTER);
+		label_3.setBounds(-11, 274, 66, 15);
+		jp2.add(label_3);
+		
+		xuId = new JTextField();
+		xuId.setHorizontalAlignment(SwingConstants.CENTER);
+		xuId.setColumns(10);
+		xuId.setBounds(37, 271, 66, 21);
+		jp2.add(xuId);
+		
+		JLabel label_4 = new JLabel("数量：");
+		label_4.setHorizontalAlignment(SwingConstants.CENTER);
+		label_4.setBounds(103, 274, 54, 15);
+		jp2.add(label_4);
+		
+		thingNum = new JTextField();
+		thingNum.setHorizontalAlignment(SwingConstants.CENTER);
+		thingNum.setColumns(10);
+		thingNum.setBounds(142, 271, 66, 21);
+		jp2.add(thingNum);
+		
+		JButton buttonshua = new JButton("更新");
+		buttonshua.addActionListener(this);
+		buttonshua.setBounds(218, 270, 93, 23);
+		jp2.add(buttonshua);
+		
+		JButton button_1 = new JButton("条件查询");
+		button_1.addActionListener(this);
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		button_1.setBounds(321, 270, 93, 23);
+		jp2.add(button_1);
+
+
+
+//---时间-------------------------------------------------------------------------------------
+		jl = new JLabel("New label");
+		jl.setHorizontalAlignment(SwingConstants.CENTER);
+		jl.setBounds(109, 10, 182, 15);
+		acontentPane.add(jl);
+		
+		MyThread mt = new MyThread(jl);
+		mt.start();
+	}
+	
+	
+	private void showAll() {
+		ABSearch ab;
+		String sql = "select * from kucun";
+		RowMapper um = new KucunMapper();
+		Object[] array={};
+		data = temp.query(sql,um,array);
+		for(int i = 0;i < data.size();i++){
+			Vector d = (Vector) data.get(i);
+			Object v = d.get(1);
+			ab = new ABSearch(v);
+			d.add(ab.ABSearchName());
+		}
+		dtm.setDataVector(data, colname);
+	}
+
+
+	public void fanSelf(){
+		
+		adata = fanSelfAll(name,password);
+		adtm.setDataVector( adata, acolname);
+	}
+	
+	public Vector fanSelfAll(Object name,Object password){
+		String sql = "select * from user where username=? and password=?";
+		RowMapper um = new UserMapper();
+		Object[] array={name,password};
+		adata = atemp.query(sql, um,array);
+		return  adata;
+		
+	}
+	
+	public String fanId(Object name,Object password){
+		String id=null;
+		if(oldpassword.getText().equals(password)){
+			adata = fanSelfAll(name,password);
+			Object data1 = adata.get(0);
+			Object v =((Vector) data1).get(0);
+			System.out.println("v----"+v);
+			String a = v.toString();
+			id=a;
+		}
+		return id;
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if("sure".equals(e.getActionCommand())){
+			if(oldpassword.getText().equals(password)){
+				System.out.println("=======sure========");
+				String id = fanId(name,password);
+				System.out.println("id----"+id);
+				String sql="update user set password=? where id=?";
+				Object[] arg={newpassword.getText(),id};
+				atemp.modify(sql, arg);
+				UserMainFrame.password = newpassword.getText();
+				password = newpassword.getText();
+				fanSelf();
+				JOptionPane.showMessageDialog(null, "修改成功，重新登录！！！！");
+				this.setVisible(false);
+				LoginFrame lf = new LoginFrame();
+				lf.setVisible(true);
+			}else{
+				JOptionPane.showMessageDialog(null, "密码错误!!");
+			}
+		}else if("更新".equals(e.getActionCommand())){
+			System.out.println("thingNum="+thingNum.getText());
+			System.out.println("xuId="+xuId.getText());
+			String sql="update kucun set number=? where id=?";
+			Object[] arg={thingNum.getText(),xuId.getText()};
+			temp.modify(sql, arg);
+//			temp.modify(sql, arg);
+			showAll();
+		}else if("返回boss界面".equals(e.getActionCommand())){
+			this.setVisible(false);
+			UserMainFrame umf = new UserMainFrame(name,password);
+		}if("条件查询".equals(e.getActionCommand())){
+			this.setVisible(false);
+			SelectFrame sf = new SelectFrame();
+			sf.setVisible(true);
+		}
+	}
+}

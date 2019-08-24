@@ -1,0 +1,338 @@
+package com.xiehui.view;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.xiehui.mapper.UserMapper;
+import com.xiehui.util.RowMapper;
+import com.xiehui.util.JDBCTemplate;
+
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
+import javax.swing.JTable;
+
+public class UserFrame extends JFrame implements ActionListener{
+	private Object password = UserMainFrame.password;
+	private Object name = UserMainFrame.name;
+	private int root = UserMainFrame.root;
+
+	private JPanel contentPane;
+	private JTextField oldpassword;
+	private JTextField newpassword;
+	private JDBCTemplate temp = new JDBCTemplate();
+	private JTextField nameru;
+	private JTextField passwordru;
+	private JTextField rootru;
+	private JTextField idxiu;
+	private JTextField namexiu;
+	private JTextField passwordxiu;
+	private JTextField rootxiu;
+	private JTextField idsan;
+
+	private Vector data;
+	private Vector colname ;
+	private DefaultTableModel dtm = new DefaultTableModel();
+	private JTable table;
+	public UserFrame() {
+		
+		this.setTitle("用户："+(String) name+ "    BOSS界面");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 409);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+//显示
+		colname = new Vector();
+		colname.add("id");
+		colname.add("username");
+		colname.add("password");
+		colname.add("root");
+		showAll();		
+		table = new JTable(dtm);
+		table.setSize(424, 227);
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(0, 144, 424, 227);
+		contentPane.add(scrollPane);
+				
+				
+				
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 0, 434, 134);
+		contentPane.add(tabbedPane);
+		
+//修改密码	
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("设置", null, panel, null);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("原  密  码：");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(73, 10, 74, 15);
+		panel.add(lblNewLabel);
+		
+		oldpassword = new JTextField();
+		oldpassword.setHorizontalAlignment(SwingConstants.CENTER);
+		oldpassword.setBounds(175, 7, 126, 21);
+		panel.add(oldpassword);
+		oldpassword.setColumns(10);
+		
+		JLabel label = new JLabel("新  密  码：");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setBounds(73, 49, 74, 15);
+		panel.add(label);
+		
+		JButton button = new JButton("sure");
+		button.addActionListener(this);
+		
+		newpassword = new JTextField();
+		newpassword.setBounds(175, 46, 126, 21);
+		panel.add(newpassword);
+		newpassword.setColumns(10);
+		button.setBounds(152, 77, 93, 23);
+		panel.add(button);
+		
+//管理	
+		JPanel manger = new JPanel();
+		tabbedPane.addTab("管理", null, manger, null);
+		manger.setLayout(null);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 0, 429, 342);
+		manger.add(panel_1);
+		panel_1.setLayout(null);
+		
+		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane_1.setBounds(0, 0, 409, 94);
+		panel_1.add(tabbedPane_1);
+	
+//添加		
+		JPanel panel_2 = new JPanel();
+		tabbedPane_1.addTab("添加", null, panel_2, null);
+		panel_2.setLayout(null);
+		
+		JLabel lblUserid = new JLabel("姓  名：");
+		lblUserid.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserid.setBounds(10, 10, 54, 15);
+		panel_2.add(lblUserid);
+		
+		nameru = new JTextField();
+		nameru.setBounds(62, 7, 66, 21);
+		panel_2.add(nameru);
+		nameru.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("密  码：");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(235, 10, 54, 15);
+		panel_2.add(lblNewLabel_1);
+		
+		passwordru = new JTextField();
+		passwordru.setBounds(286, 7, 66, 21);
+		panel_2.add(passwordru);
+		passwordru.setColumns(10);
+		
+		JLabel lblNewLabel_2 = new JLabel("权  限：");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_2.setBounds(10, 40, 54, 15);
+		panel_2.add(lblNewLabel_2);
+		
+		rootru = new JTextField();
+		rootru.setBounds(62, 35, 66, 21);
+		panel_2.add(rootru);
+		rootru.setColumns(10);
+	
+		JButton btnru = new JButton("insert");
+		btnru.addActionListener(this);
+		btnru.setBounds(259, 35, 93, 23);
+		panel_2.add(btnru);
+//修改			
+		JPanel panel_3 = new JPanel();
+		tabbedPane_1.addTab("修改", null, panel_3, null);
+		panel_3.setLayout(null);
+		
+		JLabel lblNewLabel_3 = new JLabel("id:");
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3.setBounds(0, 3, 54, 15);
+		panel_3.add(lblNewLabel_3);
+		
+		idxiu = new JTextField();
+		idxiu.setBounds(40, 0, 66, 21);
+		panel_3.add(idxiu);
+		idxiu.setColumns(10);
+		
+		JLabel lblNewLabel_4 = new JLabel("姓  名：");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4.setBounds(138, 3, 54, 15);
+		panel_3.add(lblNewLabel_4);
+		
+		namexiu = new JTextField();
+		namexiu.setBounds(187, 0, 66, 21);
+		panel_3.add(namexiu);
+		namexiu.setColumns(10);
+		
+		JLabel lblNewLabel_5 = new JLabel("密  码：");
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5.setBounds(282, 3, 54, 15);
+		panel_3.add(lblNewLabel_5);
+		
+		passwordxiu = new JTextField();
+		passwordxiu.setBounds(328, 0, 66, 21);
+		panel_3.add(passwordxiu);
+		passwordxiu.setColumns(10);
+		
+		JLabel lblNewLabel_6 = new JLabel("权  限：");
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_6.setBounds(40, 40, 54, 15);
+		panel_3.add(lblNewLabel_6);
+		
+		rootxiu = new JTextField();
+		rootxiu.setBounds(95, 37, 66, 21);
+		panel_3.add(rootxiu);
+		rootxiu.setColumns(10);
+		
+		JButton btnxiu = new JButton("update");
+		btnxiu.addActionListener(this);
+		btnxiu.setBounds(268, 36, 93, 23);
+		panel_3.add(btnxiu);
+//删除		
+		JPanel panel_4 = new JPanel();
+		tabbedPane_1.addTab("删除", null, panel_4, null);
+		panel_4.setLayout(null);
+		
+		JLabel lblId = new JLabel("id：");
+		lblId.setHorizontalAlignment(SwingConstants.CENTER);
+		lblId.setBounds(35, 20, 54, 15);
+		panel_4.add(lblId);
+		
+		idsan = new JTextField();
+		idsan.setBounds(77, 17, 66, 21);
+		panel_4.add(idsan);
+		idsan.setColumns(10);
+		
+		JButton btnshan = new JButton("delete");
+		btnshan.addActionListener(this);
+		btnshan.setBounds(257, 16, 93, 23);
+		panel_4.add(btnshan);
+		
+		JPanel panel_5 = new JPanel();
+		tabbedPane_1.addTab("其他部门", null, panel_5, null);
+		panel_5.setLayout(null);
+		
+		JButton managerJin = new JButton("进货管理");
+		managerJin.addActionListener(this);
+		managerJin.setBounds(30, 21, 93, 23);
+		panel_5.add(managerJin);
+		
+		JButton managerXiao = new JButton("销售管理");
+		managerXiao.addActionListener(this);
+		managerXiao.setBounds(154, 21, 93, 23);
+		panel_5.add(managerXiao);
+		
+		JButton managerKu = new JButton("库存管理");
+		managerKu.addActionListener(this);
+		managerKu.setBounds(278, 21, 93, 23);
+		panel_5.add(managerKu);
+	
+		
+	
+	}
+	
+	public Vector fanRoot(Object name,Object password){
+		String sql = "select * from user where username=? and password=?";
+		RowMapper um = new UserMapper();
+		Object[] array={name,password};
+		data = temp.query(sql, um,array);
+		return data;
+	}
+	
+	public void showAll(){
+		String sql = "select * from user";
+		RowMapper um = new UserMapper();
+		Object[] array={};
+		data = temp.query(sql,um,array);
+		System.out.println("data="+data);
+		dtm.setDataVector(data, colname);
+		
+	}
+//按钮
+	public void actionPerformed(ActionEvent e) {
+		if("sure".equals(e.getActionCommand())){
+			if(oldpassword.getText().equals(password)){
+				System.out.println("=======sure========");
+				data = fanRoot(name,password);
+				Object data1 = data.get(0);
+				Object v =((Vector) data1).get(0);
+				String a = v.toString();		
+				String sql="update user set password=? where id=?";
+				Object[] arg={newpassword.getText(),a};
+				temp.modify(sql, arg);
+				showAll();
+			}else{
+				JOptionPane.showMessageDialog(null, "密码错误!!");
+			}
+		}else if("insert".equals(e.getActionCommand())){
+			System.out.println("======insert========");
+			if(rootru.getText().equals("1")){
+				JOptionPane.showMessageDialog(null, "权限限制!!");
+			}else{
+				String sql="insert into user(username,password,root) values(?,?,?)";
+				Object[] arg={nameru.getText(),passwordru.getText(),rootru.getText()};
+				temp.modify(sql, arg);
+				showAll();
+			}
+			
+		}else if("update".equals(e.getActionCommand())){
+			System.out.println("=======update========");
+			if(rootxiu.getText().equals("1")){
+				JOptionPane.showMessageDialog(null, "权限限制!!");
+			}else{
+				String sql="update user set username=?,password=?,root=? where id=?";
+				Object[] arg={namexiu.getText(),passwordxiu.getText(),rootxiu.getText(),idxiu.getText()};
+				temp.modify(sql, arg);
+				showAll();
+				}
+		}else if("delete".equals(e.getActionCommand())){
+			System.out.println("=======delete========");
+			String sql="delete from user where id=?";
+			Object[] arg={idsan.getText()};
+System.out.println("arg="+arg);
+			temp.modify(sql, arg);
+			showAll();
+		}else if ("进货管理".equals(e.getActionCommand())) {
+			this.setVisible(false);
+			JinFrame abf = new JinFrame();
+			abf.setVisible(true);
+		} else if ("销售管理".equals(e.getActionCommand())) {
+			this.setVisible(false);
+			XiaoFrame abcf = new XiaoFrame();
+			abcf.setVisible(true);
+			
+		} else if ("库存管理".equals(e.getActionCommand())) {
+			this.setVisible(false);
+			KuFrame kf = new KuFrame();
+			kf.setVisible(true);
+			
+		}
+	}
+
+	
+}
